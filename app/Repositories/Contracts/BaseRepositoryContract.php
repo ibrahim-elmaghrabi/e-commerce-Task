@@ -6,7 +6,7 @@ use Illuminate\Database\Eloquent\Model;
 
 interface BaseRepositoryContract
 {
-   // public function all(): collection;
+    public function all();
     public function find(int $id): ?Model;
     public function whereFirst(string $column,string $value): ?Model;
     public function create(array $data): ?Model;

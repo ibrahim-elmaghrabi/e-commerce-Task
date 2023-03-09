@@ -9,10 +9,10 @@ class BaseRepository implements BaseRepositoryContract
 {
     private Model $model;
 
-   /*  public function all(): collection
+     public function all()
     {
         return $this->model->get();
-    } */
+    }
 
     public function find($id): ?Model
     {
@@ -33,7 +33,8 @@ class BaseRepository implements BaseRepositoryContract
     public function update(int $id, array $data): ?Model
     {
         $model = $this->find($id);
-        return $model->update($data);
+        $model->update($data);
+        return $model->fresh();
     }
 
     public function delete(int $id): bool
