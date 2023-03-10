@@ -12,4 +12,9 @@ class UserRepository extends BaseRepository implements UserRepositoryContract
     {
         $this->setModel($user);
     }
+
+    public function logout(): void
+    {
+        request()->user()->currentAccessToken()->delete();
+    }
 }

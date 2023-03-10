@@ -5,8 +5,11 @@ use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\OrderController;
 use App\Http\Controllers\StoreController;
 use App\Http\Controllers\ProductController;
-use App\Http\Controllers\Auth\LoginController;
-use App\Http\Controllers\Auth\RegisterController;
+use App\Http\Controllers\Auth\{
+    LoginController,
+    RegisterController,
+    LogoutController,
+};
 
 /*
 |--------------------------------------------------------------------------
@@ -40,5 +43,6 @@ Route::group(['middleware' => 'auth:sanctum'], function(){
     Route::delete('products/{id}', [ProductController::class, 'destroy']);
 
     Route::post('orders', [OrderController::class, 'store']);
+    Route::post('logout', [LogoutController::class, 'logout']);
 
 });
