@@ -19,11 +19,9 @@ class LoginService
         $user = $this->userRepository->whereFirst('email', $data['email']);
         if (!$user || !Hash::check($data['password'], $user->password))
         {
-            throw new WrongCredentialsException;
+            return httpResponse(0, 'wrong credentials');
         }
         $token = $user->createToken('UserToken')->plainTextToken;
-        return response()->json([
-            'token' => $token
-        ]);
+        return httpResponse(1, 'Success', ['token' => $token]);
     }
 }

@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use App\Http\Requests\ProductRequest;
+use App\Http\Resources\ProductResource;
 use App\Repositories\Contracts\StoreRepositoryContract;
 use App\Repositories\Contracts\ProductRepositoryContract;
 
@@ -25,13 +26,13 @@ class ProductController extends Controller
     public function index()
     {
         $products = $this->productRepository->all();
-        return httpResponse(1, "Success", $products);
+        return httpResponse(1, "Success", ProductResource::collection($products));
     }
 
     public function productsByStore($storeId)
     {
         $products = $this->productRepository->whereGet('store_id', $storeId);
-        return httpResponse(1, 'Success', $products);
+        return httpResponse(1, 'Success', ProductResource::collection($products));
     }
 
     /**
@@ -53,7 +54,7 @@ class ProductController extends Controller
     public function show(int $id)
     {
         $product = $this->productRepository->find($id);
-        return httpResponse(1, "Success", $product);
+        return httpResponse(1, "Success", new ProductResource($product));
     }
 
     /**

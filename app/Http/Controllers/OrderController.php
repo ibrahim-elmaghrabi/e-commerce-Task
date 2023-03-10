@@ -2,25 +2,30 @@
 
 namespace App\Http\Controllers;
 
-use Illuminate\Http\Request;
 use App\Http\Requests\OrderRequest;
 use App\Services\CreateOrderService;
+use App\Http\Resources\OrderResource;
+use App\Repositories\Contracts\OrderRepositoryContract;
 
 class OrderController extends Controller
 {
 
     protected $orderService ;
+
+    protected $orderRepository;
     
-    public function __construct(CreateOrderService $createOrderService)
+    public function __construct(CreateOrderService $createOrderService, OrderRepositoryContract $orderRepositoryContract)
     {
         $this->orderService = $createOrderService ;
+        $this->orderRepository = $orderRepositoryContract;
     }
     /**
      * Display a listing of the resource.
      */
     public function index()
     {
-        //
+        $orders= $this->orderRepository->whereGet('user_id', auth()->user()->id);
+        return httpResponse(1, 'Success', OrderResource::collection($orders));
     }
 
     /**
@@ -35,9 +40,14 @@ class OrderController extends Controller
     /**
      * Display the specified resource.
      */
-    public function show(string $id)
+    public function show(int $id)
     {
-        //
+        $order = $this->orderRepository->find($id);
+        if($order->user_id != auth()->user()->id)
+        {
+            return httpResponse(0, 'unauthorized');
+        }
+        return httpResponse(1, 'Success', new OrderResource($order));
     }
 
     /**

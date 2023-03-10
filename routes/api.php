@@ -2,9 +2,12 @@
 
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
-use App\Http\Controllers\OrderController;
-use App\Http\Controllers\StoreController;
-use App\Http\Controllers\ProductController;
+use App\Http\Controllers\{
+    OrderController,
+    StoreController,
+    ProductController,
+
+};
 use App\Http\Controllers\Auth\{
     LoginController,
     RegisterController,
@@ -42,6 +45,8 @@ Route::group(['middleware' => 'auth:sanctum'], function(){
     Route::put('products/{id}', [ProductController::class, 'update']);
     Route::delete('products/{id}', [ProductController::class, 'destroy']);
 
+    Route::get('orders', [OrderController::class, 'index']);
+    Route::get('orders/{id}', [OrderController::class, 'show']);
     Route::post('orders', [OrderController::class, 'store']);
     Route::post('logout', [LogoutController::class, 'logout']);
 

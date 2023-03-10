@@ -3,13 +3,14 @@
 namespace App\Repositories\Eloquent;
 
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Collection;
 use App\Repositories\Contracts\BaseRepositoryContract;
 
 class BaseRepository implements BaseRepositoryContract
 {
     private Model $model;
 
-     public function all()
+    public function all(): ?Collection
     {
         return $this->model->get();
     }
@@ -30,9 +31,17 @@ class BaseRepository implements BaseRepositoryContract
          return $model->fresh();
     }
 
-    public function whereGet($column, $value)
+    public function whereGet($column, $value): ?Collection
     {
         return $this->getModel()->where($column, $value)->get();
+    }
+
+    public function filter(string $key1, string $key2, string $value): ?Collection
+    {
+        return $this->model->where(function($query) use($key1, $key2, $value){
+            $query->where($key1, $value)
+            ->orWhere($key2, $value);
+        })->get();
     }
 
     public function update(int $id, array $data): ?Model

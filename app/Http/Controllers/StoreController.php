@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use App\Http\Requests\StoreRequest;
+use App\Http\Resources\StoreResource;
 use Symfony\Component\HttpFoundation\Response;
 use App\Repositories\Contracts\StoreRepositoryContract;
 
@@ -21,7 +22,7 @@ class StoreController extends Controller
     public function index()
     {
         $stores = $this->storeRepository->all();
-        return httpResponse(1, 'Success', $stores);
+        return httpResponse(1, 'Success', StoreResource::collection($stores));
     }
 
     /**
@@ -30,7 +31,7 @@ class StoreController extends Controller
     public function store(StoreRequest $request)
     {
         $store= $this->storeRepository->create($request->validated()+['user_id' => auth()->user()->id]);
-        return httpResponse(1, 'Success', $store);
+        return httpResponse(1, 'Success', new StoreResource($store));
     }
 
     /**
@@ -39,7 +40,7 @@ class StoreController extends Controller
     public function show(int $id)
     {
         $store = $this->storeRepository->find($id);
-        return httpResponse(1, 'Success', $store);
+        return httpResponse(1, 'Success', new StoreResource($store));
     }
 
     /**
@@ -54,7 +55,7 @@ class StoreController extends Controller
              return httpResponse(0, 'unauthorized');
         }
          $store = $this->storeRepository->update($id, $request->validated());
-         return httpResponse('1', 'Success', $store);
+         return httpResponse('1', 'Success', new StoreResource($store));
     }
 
     /**

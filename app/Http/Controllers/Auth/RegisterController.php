@@ -20,9 +20,9 @@ class RegisterController extends Controller
     public function register(UserRequest $request)
     {
        $user = $this->userRepository->create($request->validated());
-       return response()->json([
+       return httpResponse(1, 'Success', [
         'user'  => $user,
         'token' => $user->createToken("UserToken")->plainTextToken
-       ], Response::HTTP_OK);
+       ]);
     }
 }

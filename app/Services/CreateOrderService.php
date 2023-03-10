@@ -29,7 +29,7 @@ class CreateOrderService
         $store =  $this->storeRepository->find($data['store_id']);
         if($store->user_id == auth()->user()->id)
         {
-            throw new InvalidProcessException ;
+            return httpResponse(0, 'can not set order from your store');
         }
         DB::transaction(function () use($store, $data) {
             $order = auth()->user()->orders()->create($data);
@@ -45,9 +45,9 @@ class CreateOrderService
                     ]
                 ];
                 $order->products()->attach($readyProduct);
-                $total += $product->price * $p['quantity'];
+                $total += ($product->price * $p['quantity']);
             }
-            $total = $total + $shippingCost ;
+            $total = ($total + $shippingCost);
             if(! $store->vat_included)
             {
                 $this->productNotIncludeVat($order, $total, $store->vat_percentage, $shippingCost);
@@ -58,7 +58,7 @@ class CreateOrderService
             }
         });
         }catch (\Exceptions $e){
-            throw new GenericException;
+            return httpResponse(0, 'error happened please try again later');
         }
     
     }
@@ -66,7 +66,7 @@ class CreateOrderService
      public function productIncludeVat($order, $total, $shippingCost)
     {
         $updatedOrder= $order->update([
-                'total' => $total ,
+                'total' => $total,
                 'shipping_cost' => $shippingCost,
             ]);
         if(! $updatedOrder)
