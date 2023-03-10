@@ -13,7 +13,7 @@ class CreateOrdersTable extends Migration {
 			$table->integer('user_id')->unsigned();
 			$table->integer('store_id')->unsigned();
 			$table->decimal('shipping_cost')->default('0.0');
-			$table->decimal('total');
+			$table->decimal('total')->default(0);
 		});
 	}
 
