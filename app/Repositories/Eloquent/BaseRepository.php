@@ -37,9 +37,14 @@ class BaseRepository implements BaseRepositoryContract
         return $model->fresh();
     }
 
-    public function delete(int $id): bool
+    public function deleteById(int $id): bool
     {
         return $this->find($id)->delete();
+    }
+
+    public function delete(): bool
+    {
+        return $this->model->delete();
     }
 
     public function getModel(): Model

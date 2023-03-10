@@ -11,5 +11,7 @@ interface BaseRepositoryContract
     public function whereFirst(string $column,string $value): ?Model;
     public function create(array $data): ?Model;
     public function update(int $id, array $data): ?Model;
-    public function delete(int $id): bool;
+    public function deleteById(int $id): bool;
+    public function delete(): bool;
+
 }

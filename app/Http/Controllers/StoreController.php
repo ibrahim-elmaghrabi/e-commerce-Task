@@ -11,8 +11,6 @@ class StoreController extends Controller
 {
     protected $storeRepository;
 
-    protected $userRepository;
-
     public function __construct(StoreRepositoryContract $storeRepositoryContract)
     {
         $this->storeRepository = $storeRepositoryContract ;
@@ -74,7 +72,7 @@ class StoreController extends Controller
      */
     public function destroy(int $id)
     {
-        return $this->storeRepository->delete($id) ? httpResponse('0', 'Failed') : httpResponse('error', 'error happened please Try again');
+        return $this->storeRepository->deleteById($id) ? httpResponse('0', 'Failed') : httpResponse('error', 'error happened please Try again');
 
     }
 }
