@@ -5,6 +5,7 @@ namespace App\Services;
 use Exceptions;
 use Illuminate\Support\Facades\DB;
 use App\Exceptions\GenericException;
+use App\Exceptions\InvalidProcessException;
 use App\Repositories\Contracts\StoreRepositoryContract;
 use App\Repositories\Contracts\ProductRepositoryContract;
 
@@ -26,6 +27,10 @@ class CreateOrderService
     {
     try{
         $store =  $this->storeRepository->find($data['store_id']);
+        if($store->user_id == auth()->user()->id)
+        {
+            throw new InvalidProcessException ;
+        }
         DB::transaction(function () use($store, $data) {
             $order = auth()->user()->orders()->create($data);
             $total = 0 ;
@@ -68,7 +73,6 @@ class CreateOrderService
         {
              $order->meals()->detach($readyMeal);
              $order->delete();
-             throw new GenericException;
         }
          
     }
@@ -86,7 +90,6 @@ class CreateOrderService
         {
              $order->meals()->detach($readyMeal);
              $order->delete();
-             throw new GenericException;
         }
             
     }

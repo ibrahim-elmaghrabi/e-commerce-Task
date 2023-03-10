@@ -13,8 +13,5 @@ class ProductRepository extends BaseRepository implements ProductRepositoryContr
         $this->setModel($product);
     }
 
-    public function storeProducts(int $storeId)
-    {
-        return $this->getModel()->where('store_id', $storeId)->get();
-    }
+    
 }

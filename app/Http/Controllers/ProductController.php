@@ -28,9 +28,9 @@ class ProductController extends Controller
         return httpResponse(1, "Success", $products);
     }
 
-    public function productsByStore(int $storeId)
+    public function productsByStore($storeId)
     {
-        $products = $this->productRepository->storeProducts($storeId);
+        $products = $this->productRepository->whereGet('store_id', $storeId);
         return httpResponse(1, 'Success', $products);
     }
 
@@ -40,7 +40,7 @@ class ProductController extends Controller
     public function store(ProductRequest $request)
     {
         $store = $this->storeRepository->find($request['store_id']);
-        if($store->user->id != auth()->user->id){
+        if($store->user->id != auth()->user()->id){
             return httpResponse(0, 'unauthorized');
         }
         $product = $this->productRepository->create($request->validated());
@@ -61,11 +61,11 @@ class ProductController extends Controller
      */
     public function update(ProductRequest $request, int $id)
     {
-        $store = $this->storeRepository->find($request['store_id']);
-        if($store->user->id != auth()->user->id){
+        $product = $this->productRepository->find($id);
+        if($product->store->user->id != auth()->user()->id){
             return httpResponse(0, 'unauthorized');
         }
-         $product =$this->productRepository->update($id, $request->validated);
+         $product =$this->productRepository->update($id, $request->validated());
          return httpResponse(1, 'Success', $product);
     }
 

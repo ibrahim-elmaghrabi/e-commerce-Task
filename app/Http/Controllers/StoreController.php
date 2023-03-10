@@ -48,21 +48,11 @@ class StoreController extends Controller
     public function update(StoreRequest $request, int $id)
     {
         $store = $this->storeRepository->find($id);
-        if(! $store)
+         
+        if($store->user_id != auth()->user()->id)
         {
-             return response()->json([
-                'status' => 'error',
-                'error'  => 'notFound'
-            ], Response::HTTP_NOT_FOUND);
+             return httpResponse(0, 'unauthorized');
         }
-        if(! $store->user_id == auth()->user()->id)
-        {
-            return response()->json([
-                'status' => 'error',
-                'error'  => 'unauthorized'
-            ], Response::HTTP_UNAUTHORIZED);
-        }
-            
          $store = $this->storeRepository->update($id, $request->validated());
          return httpResponse('1', 'Success', $store);
     }
@@ -72,7 +62,12 @@ class StoreController extends Controller
      */
     public function destroy(int $id)
     {
-        return $this->storeRepository->deleteById($id) ? httpResponse('0', 'Failed') : httpResponse('error', 'error happened please Try again');
-
+        $store = $this->storeRepository->find($id);
+         if($store->user_id != auth()->user()->id)
+        {
+             return httpResponse(0, 'unauthorized');
+        }
+        $store->delete();
+        return httpResponse(1, 'Success');
     }
 }

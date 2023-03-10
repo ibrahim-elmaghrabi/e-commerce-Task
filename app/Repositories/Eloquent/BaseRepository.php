@@ -30,6 +30,11 @@ class BaseRepository implements BaseRepositoryContract
          return $model->fresh();
     }
 
+    public function whereGet($column, $value)
+    {
+        return $this->getModel()->where($column, $value)->get();
+    }
+
     public function update(int $id, array $data): ?Model
     {
         $model = $this->find($id);
