@@ -31,17 +31,9 @@ class BaseRepository implements BaseRepositoryContract
          return $model->fresh();
     }
 
-    public function whereGet($column, $value): ?Collection
+    public function getWhere($column, $value): ?Collection
     {
         return $this->getModel()->where($column, $value)->get();
-    }
-
-    public function filter(string $key1, string $key2, string $value): ?Collection
-    {
-        return $this->model->where(function($query) use($key1, $key2, $value){
-            $query->where($key1, $value)
-            ->orWhere($key2, $value);
-        })->get();
     }
 
     public function update(int $id, array $data): ?Model

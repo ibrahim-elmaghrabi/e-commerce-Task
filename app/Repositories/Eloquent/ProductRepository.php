@@ -12,6 +12,5 @@ class ProductRepository extends BaseRepository implements ProductRepositoryContr
     {
         $this->setModel($product);
     }
-
     
 }

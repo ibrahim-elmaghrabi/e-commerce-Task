@@ -1,8 +1,8 @@
 <?php
 
-namespace App\Http\Controllers;
+namespace App\Http\Controllers\Api;
 
-use Illuminate\Http\Request;
+use App\Http\Controllers\Controller;
 use App\Http\Requests\ProductRequest;
 use App\Http\Resources\ProductResource;
 use App\Repositories\Contracts\StoreRepositoryContract;
@@ -31,7 +31,7 @@ class ProductController extends Controller
 
     public function productsByStore($storeId)
     {
-        $products = $this->productRepository->whereGet('store_id', $storeId);
+        $products = $this->productRepository->getWhere('store_id', $storeId);
         return httpResponse(1, 'Success', ProductResource::collection($products));
     }
 
@@ -45,7 +45,7 @@ class ProductController extends Controller
             return httpResponse(0, 'unauthorized');
         }
         $product = $this->productRepository->create($request->validated());
-        return httpResponse(1, "Success", $product);
+        return httpResponse(1, "Success", new ProductResource($product));
     }
 
     /**
@@ -67,7 +67,7 @@ class ProductController extends Controller
             return httpResponse(0, 'unauthorized');
         }
          $product =$this->productRepository->update($id, $request->validated());
-         return httpResponse(1, 'Success', $product);
+         return httpResponse(1, 'Success', new ProductResource($product));
     }
 
     /**

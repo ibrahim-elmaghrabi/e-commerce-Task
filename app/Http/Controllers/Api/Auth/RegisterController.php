@@ -1,11 +1,9 @@
 <?php
 
-namespace App\Http\Controllers\Auth;
+namespace App\Http\Controllers\Api\Auth;
 
-use Illuminate\Http\Request;
 use App\Http\Requests\UserRequest;
 use App\Http\Controllers\Controller;
-use Symfony\Component\HttpFoundation\Response;
 use App\Repositories\Contracts\UserRepositoryContract;
 
 class RegisterController extends Controller
@@ -20,9 +18,7 @@ class RegisterController extends Controller
     public function register(UserRequest $request)
     {
        $user = $this->userRepository->create($request->validated());
-       return httpResponse(1, 'Success', [
-        'user'  => $user,
-        'token' => $user->createToken("UserToken")->plainTextToken
-       ]);
+       $token = $user->createToken("UserToken")->plainTextToken;
+       return httpResponse(1, 'Success', ['token' => $token]);
     }
 }

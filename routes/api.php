@@ -2,16 +2,18 @@
 
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
-use App\Http\Controllers\{
+/* use App\Http\Controllers\Api\{
     OrderController,
     StoreController,
     ProductController,
-
-};
-use App\Http\Controllers\Auth\{
-    LoginController,
-    RegisterController,
-    LogoutController,
+}; */
+use App\Http\Controllers\Api\{
+    Auth\LoginController,
+    Auth\RegisterController,
+    Auth\LogoutController,
+    OrderController,
+    StoreController,
+    ProductController,
 };
 
 /*
@@ -49,5 +51,4 @@ Route::group(['middleware' => 'auth:sanctum'], function(){
     Route::get('orders/{id}', [OrderController::class, 'show']);
     Route::post('orders', [OrderController::class, 'store']);
     Route::post('logout', [LogoutController::class, 'logout']);
-
 });

@@ -28,8 +28,10 @@ class ProductRequest extends ApiRequest
     public function createProduct()
     {
         return [
-            'name' => 'required',
-            'description' => 'required',
+            'name.en' => 'required',
+            'name.ar' => 'required',
+            'description.en' => 'required',
+            'description.ar' => 'required',
             'price' => 'required',
             'store_id' => 'required'
 
@@ -40,8 +42,10 @@ class ProductRequest extends ApiRequest
     public function updateProduct()
     {
         return [
-            'name' => 'sometimes|required',
-            'description' => 'sometimes|required',
+            'name.en' => 'sometimes|required',
+            'name.ar' => 'sometimes|required',
+            'description.en' => 'sometimes|required',
+            'description.ar' => 'sometimes|required',
             'price' => 'sometimes|required',
         ];
     }

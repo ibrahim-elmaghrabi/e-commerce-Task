@@ -2,10 +2,7 @@
 
 namespace App\Services;
 
-use Exceptions;
 use Illuminate\Support\Facades\DB;
-use App\Exceptions\GenericException;
-use App\Exceptions\InvalidProcessException;
 use App\Repositories\Contracts\StoreRepositoryContract;
 use App\Repositories\Contracts\ProductRepositoryContract;
 
@@ -25,11 +22,10 @@ class CreateOrderService
 
     public function createOrder(array $data)
     {
-    try{
-        $store =  $this->storeRepository->find($data['store_id']);
+        $store = $this->storeRepository->find($data['store_id']);
         if($store->user_id == auth()->user()->id)
         {
-            return httpResponse(0, 'can not set order from your store');
+            return httpResponse(0, 'cannot set order from your store');
         }
         DB::transaction(function () use($store, $data) {
             $order = auth()->user()->orders()->create($data);
@@ -57,10 +53,7 @@ class CreateOrderService
                 $this->productIncludeVat($order, $total, $shippingCost);
             }
         });
-        }catch (\Exceptions $e){
-            return httpResponse(0, 'error happened please try again later');
-        }
-    
+        return httpResponse(1, 'Success');
     }
 
      public function productIncludeVat($order, $total, $shippingCost)
@@ -73,6 +66,7 @@ class CreateOrderService
         {
              $order->meals()->detach($readyMeal);
              $order->delete();
+             return httpResponse(0, 'order creation process failed');
         }
          
     }
@@ -90,6 +84,8 @@ class CreateOrderService
         {
              $order->meals()->detach($readyMeal);
              $order->delete();
+             return httpResponse(0, 'order creation process failed');
+
         }
             
     }

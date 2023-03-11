@@ -10,8 +10,7 @@ interface BaseRepositoryContract
     public function all(): ?Collection;
     public function find(int $id): ?Model;
     public function whereFirst(string $column,string $value): ?Model;
-    public function whereGet(string $column, string $value): ?Collection;
-    public function filter(string $key1, string $key2, string $value): ?Collection;
+    public function getWhere(string $column, string $value): ?Collection;
     public function create(array $data): ?Model;
     public function update(int $id, array $data): ?Model;
     public function deleteById(int $id): bool;

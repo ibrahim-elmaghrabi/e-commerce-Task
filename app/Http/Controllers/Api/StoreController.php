@@ -1,11 +1,10 @@
 <?php
 
-namespace App\Http\Controllers;
+namespace App\Http\Controllers\Api;
 
-use Illuminate\Http\Request;
 use App\Http\Requests\StoreRequest;
+use App\Http\Controllers\Controller;
 use App\Http\Resources\StoreResource;
-use Symfony\Component\HttpFoundation\Response;
 use App\Repositories\Contracts\StoreRepositoryContract;
 
 class StoreController extends Controller

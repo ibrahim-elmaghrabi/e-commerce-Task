@@ -30,7 +30,7 @@ class StoreRequest extends ApiRequest
         return [
             'name'=> 'required|string',
             'vat_included'=> 'required|boolean',
-            'vat_percentage'=> 'between:0,99.99',
+            'vat_percentage'=> 'required|between:0,99.99',
             'shipping_cost' => 'between:0,99.99',
         ];
     }

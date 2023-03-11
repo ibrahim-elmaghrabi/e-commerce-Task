@@ -1,8 +1,9 @@
 <?php
 
-namespace App\Http\Controllers;
+namespace App\Http\Controllers\Api;
 
 use App\Http\Requests\OrderRequest;
+use App\Http\Controllers\Controller;
 use App\Services\CreateOrderService;
 use App\Http\Resources\OrderResource;
 use App\Repositories\Contracts\OrderRepositoryContract;
@@ -24,7 +25,7 @@ class OrderController extends Controller
      */
     public function index()
     {
-        $orders= $this->orderRepository->whereGet('user_id', auth()->user()->id);
+        $orders= $this->orderRepository->getWhere('user_id', auth()->user()->id);
         return httpResponse(1, 'Success', OrderResource::collection($orders));
     }
 
@@ -33,8 +34,9 @@ class OrderController extends Controller
      */
     public function store(OrderRequest $request)
     {
-         $this->orderService->createOrder($request->validated());
-         return httpResponse(1, 'Success');
+         return $this->orderService->createOrder($request->validated());
+        
+        
     }
 
     /**
