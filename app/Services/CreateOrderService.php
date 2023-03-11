@@ -2,6 +2,7 @@
 
 namespace App\Services;
 
+use Exception;
 use Illuminate\Support\Facades\DB;
 use App\Repositories\Contracts\StoreRepositoryContract;
 use App\Repositories\Contracts\ProductRepositoryContract;
@@ -27,33 +28,38 @@ class CreateOrderService
         {
             return httpResponse(0, 'cannot set order from your store');
         }
-        DB::transaction(function () use($store, $data) {
-            $order = auth()->user()->orders()->create($data);
-            $total = 0 ;
-            $shippingCost = $store->shipping_cost;
-            foreach ($data['products'] as $p)
-            {
-                $product = $this->productRepository->find($p['product_id']);
-                $readyProduct = [
-                    $p['product_id'] => [
-                        'quantity' => $p['quantity'],
-                        'price'    => $product->price,
-                    ]
-                ];
-                $order->products()->attach($readyProduct);
-                $total += ($product->price * $p['quantity']);
-            }
-            $total = ($total + $shippingCost);
-            if(! $store->vat_included)
-            {
-                $this->productNotIncludeVat($order, $total, $store->vat_percentage, $shippingCost);
-                
-            }else{
+        try{
+            DB::transaction(function () use($store, $data) {
+                $order = auth()->user()->orders()->create($data);
+                $total = 0 ;
+                $shippingCost = $store->shipping_cost;
+                foreach ($data['products'] as $p)
+                {
+                    $product = $this->productRepository->find($p['product_id']);
+                    $readyProduct = [
+                        $p['product_id'] => [
+                            'quantity' => $p['quantity'],
+                            'price'    => $product->price,
+                        ]
+                    ];
+                    $order->products()->attach($readyProduct);
+                    $total += ($product->price * $p['quantity']);
+                }
+                $total = ($total + $shippingCost);
+                if(! $store->vat_included)
+                {
+                    $this->productNotIncludeVat($order, $total, $store->vat_percentage, $shippingCost);
                     
-                $this->productIncludeVat($order, $total, $shippingCost);
-            }
-        });
-        return httpResponse(1, 'Success');
+                }else{
+                        
+                    $this->productIncludeVat($order, $total, $shippingCost);
+                }
+            });
+            return httpResponse(1, 'Success');
+        }catch(Exception $e)
+        {
+            return httpResponse(0, 'error happened please try again later');
+        }
     }
 
      public function productIncludeVat($order, $total, $shippingCost)
@@ -64,7 +70,7 @@ class CreateOrderService
             ]);
         if(! $updatedOrder)
         {
-             $order->meals()->detach($readyMeal);
+             $order->products()->detach($readyProduct);
              $order->delete();
              return httpResponse(0, 'order creation process failed');
         }
@@ -73,8 +79,8 @@ class CreateOrderService
 
     public function productNotIncludeVat($order, $total, $vatPercentage, $shippingCost)
     {
-        $vat = $vatPercentage * $total ;
-        $total = $total - $vat ;
+        $vat = ($vatPercentage * $total) ;
+        $total = ($total - $vat) ;
         $updatedOrder= $order->update([
             'total' => $total ,
             'shipping_cost' => $shippingCost,
@@ -82,10 +88,9 @@ class CreateOrderService
         ]);
          if(! $updatedOrder)
         {
-             $order->meals()->detach($readyMeal);
+             $order->products()->detach($readyProduct);
              $order->delete();
              return httpResponse(0, 'order creation process failed');
-
         }
             
     }
